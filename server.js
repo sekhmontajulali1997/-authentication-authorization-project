@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import errorHandler from "./errorHandler/errorHandler.js";
 import authRouters from "./routers/authRouters/authRouters.js";
 import cookieParser from "cookie-parser";
-import cors from "cors"
+import cors from "cors";
 
 // environment Varibale
 
@@ -20,18 +20,20 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser())
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}))
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "https://authentication-authorization-fontend.vercel.app",
+    credentials: true,
+  })
+);
 
 // use Routers
 
-app.use("/api/v1/users", authRouters)
+app.use("/api/v1/users", authRouters);
 // errorHandler
 
-app.use(errorHandler)
+app.use(errorHandler);
 // listen server
 
 app.listen(PORT, () => {
