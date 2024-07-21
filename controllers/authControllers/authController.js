@@ -64,13 +64,27 @@ export const createUser = expressAsyncHandler(async (req, res) => {
         expiresIn: "365d",
       }
     );
-    res.cookie("authonticationToken", authonticationToken,{
+
+
+    const isProduction = process.env.APP_MODE === 'production';
+
+    res.cookie("authonticationToken", authonticationToken, {
       httpOnly: true,
-      secure: process.env.APP_MODE === "development" ? true : false,
+      secure: isProduction, // Set to true in production
       path: "/",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 24 * 365,
+      sameSite: isProduction ? "Lax" : "Strict", // Adjust based on cross-site needs
+      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
     });
+
+
+
+    // res.cookie("authonticationToken", authonticationToken,{
+    //   httpOnly: true,
+    //   secure: process.env.APP_MODE === "development" ? true : false,
+    //   path: "/",
+    //   sameSite: "strict",
+    //   maxAge: 1000 * 60 * 60 * 24 * 365,
+    // });
     // remove importent data
     delete createUser.password;
     delete createUser.securityAnswer;
@@ -378,12 +392,14 @@ export const ForgetPasswordByOtp = expressAsyncHandler(async (req, res) => {
         expiresIn: "365d",
       }
     );
-    res.cookie("forgetPasswordToken", forgetPasswordToken,{
+    const isProduction = process.env.APP_MODE === 'production';
+
+    res.cookie("forgetPasswordToken", forgetPasswordToken, {
       httpOnly: true,
-      secure: process.env.APP_MODE === "development" ? true : false,
+      secure: isProduction, // Set to true in production
       path: "/",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 24 * 365,
+      sameSite: isProduction ? "Lax" : "Strict", // Adjust based on cross-site needs
+      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
     });
   } else {
     return res.status(400).json({ message: "This Email Not Exists" });
