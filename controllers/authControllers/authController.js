@@ -64,7 +64,13 @@ export const createUser = expressAsyncHandler(async (req, res) => {
         expiresIn: "365d",
       }
     );
-    res.cookie("authonticationToken", authonticationToken);
+    res.cookie("authonticationToken", authonticationToken,{
+      httpOnly: true,
+      secure: process.env.APP_MODE === "development" ? true : false,
+      path: "/",
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    });
     // remove importent data
     delete createUser.password;
     delete createUser.securityAnswer;
@@ -162,7 +168,7 @@ export const verifyEmailByOtp = expressAsyncHandler(async (req, res) => {
         expressAsyncHandler(async (err, decode) => {
           if (err) {
             res.status(400).json({
-              message: "Expire OTP, Please Register Again With Same Email",
+              message: "Expire OTP",
             });
           }
 
@@ -205,12 +211,10 @@ export const verifyEmailByOtp = expressAsyncHandler(async (req, res) => {
       delete getUpdatedDataForgetPassword.securityAnswer;
       delete getUpdatedDataForgetPassword.otp;
 
-      res
-        .status(201)
-        .json({
-          getUpdatedDataForgetPassword,
-          message: "Set Your New Password",
-        });
+      res.status(201).json({
+        getUpdatedDataForgetPassword,
+        message: "Set Your New Password",
+      });
     }
   }
 });
@@ -229,7 +233,7 @@ export const ResendOtp = expressAsyncHandler(async (req, res) => {
   let getValidUserForgetPassword = null;
   // get token for new user
   const authorizedToken = req.cookies.authonticationToken;
- 
+
   if (authorizedToken) {
     // verify  token
     const verifyToken = await jwt.verify(
@@ -273,11 +277,13 @@ export const ResendOtp = expressAsyncHandler(async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: " Resend otp  success for Account verify" });
+    res
+      .status(201)
+      .json({ message: " Resend otp  success for Account verify" });
   } else {
     // this is for  getValidUserForgetPassword
- // get token for forget password
- const forgetPasswordToken = req.cookies.forgetPasswordToken;
+    // get token for forget password
+    const forgetPasswordToken = req.cookies.forgetPasswordToken;
     // verify  token
     const verifyToken = await jwt.verify(
       forgetPasswordToken,
@@ -285,7 +291,7 @@ export const ResendOtp = expressAsyncHandler(async (req, res) => {
       expressAsyncHandler(async (err, decode) => {
         if (err) {
           res.status(400).json({
-            message: "Expire OTP, Please Register Again With Same Email",
+            message: "Expire OTP,",
           });
         }
 
@@ -320,7 +326,9 @@ export const ResendOtp = expressAsyncHandler(async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: " Resend otp  success for forget Password" });
+    res
+      .status(201)
+      .json({ message: " Resend otp  success for forget Password" });
   }
 });
 
@@ -370,7 +378,13 @@ export const ForgetPasswordByOtp = expressAsyncHandler(async (req, res) => {
         expiresIn: "365d",
       }
     );
-    res.cookie("forgetPasswordToken", forgetPasswordToken);
+    res.cookie("forgetPasswordToken", forgetPasswordToken,{
+      httpOnly: true,
+      secure: process.env.APP_MODE === "development" ? true : false,
+      path: "/",
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    });
   } else {
     return res.status(400).json({ message: "This Email Not Exists" });
   }
