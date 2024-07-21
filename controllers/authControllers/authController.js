@@ -102,7 +102,7 @@ export const verifyEmailByOtp = expressAsyncHandler(async (req, res) => {
       expressAsyncHandler(async (err, decode) => {
         if (err) {
           res.status(400).json({
-            message: "Expire OTP, Please Register Again With Same Email",
+            message: "Expire OTP",
           });
         }
 
@@ -238,7 +238,7 @@ export const ResendOtp = expressAsyncHandler(async (req, res) => {
       expressAsyncHandler(async (err, decode) => {
         if (err) {
           res.status(400).json({
-            message: "Expire OTP, Please Register Again With Same Email",
+            message: "invalid ",
           });
         }
 
