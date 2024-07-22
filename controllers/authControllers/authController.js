@@ -97,69 +97,71 @@ export const verifyEmailByOtp = expressAsyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Please Enter OTP" });
   }
 
-  let verifyEmailByOtpUser = null;
+ // let verifyEmailByOtpUser = null;
   let ForgetPasswordByOtp = null;
 
   //this is for accountVerify
   // get token for new user
-  const authorizedToken = req.cookies.authonticationToken;
-  if (authorizedToken) {
-    // verify  token
-    const verifyToken = await jwt.verify(
-      authorizedToken,
-      process.env.AUTHONTICATION_TOKEN_SECRET,
-      expressAsyncHandler(async (err, decode) => {
-        if (err) {
-          res.status(400).json({
-            message: "Expire OTP",
-          });
-        }
+  // const authorizedToken = req.cookies.authonticationToken;
+  // if (authorizedToken) {
+  //   // verify  token
+  //   const verifyToken = await jwt.verify(
+  //     authorizedToken,
+  //     process.env.AUTHONTICATION_TOKEN_SECRET,
+  //     expressAsyncHandler(async (err, decode) => {
+  //       if (err) {
+  //         res.status(400).json({
+  //           message: "Expire OTP",
+  //         });
+  //       }
 
-        if (decode.email) {
-          verifyEmailByOtpUser = await prisma.User.findFirst({
-            where: {
-              email: decode.email,
-            },
-          });
-        }
-      })
-    );
+  //       if (decode.email) {
+  //         verifyEmailByOtpUser = await prisma.User.findFirst({
+  //           where: {
+  //             email: decode.email,
+  //           },
+  //         });
+  //       }
+  //     })
+  //   );
 
-    if (otp !== verifyEmailByOtpUser.otp) {
-      return res.status(400).json({ message: "Wrong Otp" });
-    }
+  //   if (otp !== verifyEmailByOtpUser.otp) {
+  //     return res.status(400).json({ message: "Wrong Otp" });
+  //   }
 
-    // update user data
+  //   // update user data
 
-    if (verifyEmailByOtpUser) {
-      await prisma.User.updateMany({
-        where: {
-          email: verifyEmailByOtpUser.email,
-        },
-        data: {
-          otp: null,
-          isActivate: true,
-        },
-      });
-    }
+  //   if (verifyEmailByOtpUser) {
+  //     await prisma.User.updateMany({
+  //       where: {
+  //         email: verifyEmailByOtpUser.email,
+  //       },
+  //       data: {
+  //         otp: null,
+  //         isActivate: true,
+  //       },
+  //     });
+  //   }
 
-    // get updated data
-    const getUpdatedDataAccountVerify = await prisma.User.findFirst({
-      where: {
-        email: verifyEmailByOtpUser.email,
-      },
-    });
-    // remove importent data
-    delete getUpdatedDataAccountVerify.password;
-    delete getUpdatedDataAccountVerify.securityAnswer;
-    delete getUpdatedDataAccountVerify.otp;
+  //   // get updated data
+  //   const getUpdatedDataAccountVerify = await prisma.User.findFirst({
+  //     where: {
+  //       email: verifyEmailByOtpUser.email,
+  //     },
+  //   });
+  //   // remove importent data
+  //   delete getUpdatedDataAccountVerify.password;
+  //   delete getUpdatedDataAccountVerify.securityAnswer;
+  //   delete getUpdatedDataAccountVerify.otp;
 
-    // clear cokie
-    res.clearCookie("authonticationToken");
-    res
-      .status(201)
-      .json({ getUpdatedDataAccountVerify, message: "verify success" });
-  } else {
+  //   // clear cokie
+  //   res.clearCookie("authonticationToken");
+  //   res
+  //     .status(201)
+  //     .json({ getUpdatedDataAccountVerify, message: "verify success" });
+  // } 
+  
+
     //this is for forget Password
     // get token for forget password
     const forgetPasswordToken = req.cookies.forgetPasswordToken;
@@ -220,7 +222,7 @@ export const verifyEmailByOtp = expressAsyncHandler(async (req, res) => {
       });
     }
   }
-});
+);
 /**
  * @description: this is Email verify By ResendOtp Controller
  * @route: /api/v1/user/resend_otp
