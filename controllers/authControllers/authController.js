@@ -65,18 +65,7 @@ export const createUser = expressAsyncHandler(async (req, res) => {
       }
     );
 
-
-    const isProduction = process.env.APP_MODE === 'production';
-
-    res.cookie("authonticationToken", authonticationToken, {
-      httpOnly: true,
-      secure: isProduction, // Set to true in production
-      path: "/",
-      sameSite: isProduction ? "Lax" : "Strict", // Adjust based on cross-site needs
-      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
-    });
-
-
+    res.cookie("authonticationToken", authonticationToken);
 
     // res.cookie("authonticationToken", authonticationToken,{
     //   httpOnly: true,
@@ -392,15 +381,9 @@ export const ForgetPasswordByOtp = expressAsyncHandler(async (req, res) => {
         expiresIn: "365d",
       }
     );
-    const isProduction = process.env.APP_MODE === 'production';
+    const isProduction = process.env.APP_MODE === "production";
 
-    res.cookie("forgetPasswordToken", forgetPasswordToken, {
-      httpOnly: true,
-      secure: isProduction, // Set to true in production
-      path: "/",
-      sameSite: isProduction ? "Lax" : "Strict", // Adjust based on cross-site needs
-      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
-    });
+    res.cookie("forgetPasswordToken", forgetPasswordToken);
   } else {
     return res.status(400).json({ message: "This Email Not Exists" });
   }
